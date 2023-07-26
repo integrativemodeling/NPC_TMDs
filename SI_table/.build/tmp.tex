@@ -1,0 +1,111 @@
+\documentclass[11pt,a4paper]{article} 
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage[margin=0.2in]{geometry}
+\fontfamily{phv}\fontseries{mc}\selectfont
+\begin{document}
+
+\setcounter{table}{8}
+
+\begin{landscape}
+\begin{longtable}{ p{.48\textwidth} | p{.48\textwidth} } 
+\caption{Summary of the Pom34-Pom152 tetramer integrative structure modeling}
+  
+  &  \\
+  \textbf{1) Gathering information} & \\
+    \hline
+
+            \textit{Prior models} & 2-fold symmetry derived from cryo-EM structure\\
+                \textit{Physical principles and statistical preferences} & Excluded volume\\
+            & Sequence connectivity \\
+                \textit{Experimental data} & 14 DSS0\\
+            & Atomic structure prediction from Alphafold2 (AF\_Q12445, AF\_P39685) \\
+          
+    &  \\
+    \normalsize{\textbf{2) Representing the system}} & \\
+    \hline
+    
+            \textit{Composition (number of copies)} & 4\\
+                \textit{Atomic (structured) components} & Pom152: 105-130, 144-167, 176-192, 200-212, 105-130, 144-167, 176-192, 200-212\\
+            & Pom34: 44-86, 89-110, 122-150, 222-237, 44-86, 89-110, 122-150, 222-237 \\
+                \textit{Unstructured components} & Pom152: 1-104, 131-143, 168-175, 193-199, 213-250, 1-104, 131-143, 168-175, 193-199, 213-250\\
+            & Pom34: 1-43, 87-88, 111-121, 151-221, 238-250, 1-43, 87-88, 111-121, 151-221, 238-250 \\
+                \textit{Resolution of structured components} & 1 [R1] residue per bead\\
+                \textit{Resolution of unstructured components} & 2 [R2] residues per bead\\
+                \textit{Structural coverage} & 37.76 \%\\
+                \textit{Rigid body (RB) definitions} & RB1: Pom152$_{105-130}$\\
+            & RB2: Pom152$_{144-167}$ \\
+            & RB3: Pom152$_{176-192}$ \\
+            & RB4: Pom152$_{200-212}$ \\
+            & RB5: Pom34$_{44-86}$ \\
+            & RB6: Pom34$_{89-110}$ \\
+                \textit{Resolution of disordered regions} & 2 [R2] residues per bead\\
+                \textit{Spatial restraints encoded into scoring function} & Excluded volume; applied to the R1 representation\\
+            & Sequence connectivity; applied to the R1 representation \\
+            & Cross-link restraints; applied to the R1 representation \\
+          
+   &  \\
+    \normalsize{\textbf{3) Structural Sampling}} & \\
+    \hline
+            \textit{Sampling method} & Replica Exchange Gibbs sampling, based on Metropolis Monte Carlo\\
+                \textit{Replica exchange temperature range} & 1.0 - 4.0\\
+                \textit{Number of replicas} & 6\\
+                \textit{Number of runs} & 80\\
+                \textit{Number of structures generated} & 6400000\\
+                \textit{Movers for flexible string of bead} & Random translation up to 4.0 \AA\\
+                \textit{CPU time} & 22 hours on 80 processors\\
+        
+   &  \\
+
+  \normalsize{\textbf{4) Validating the Pom34-Pom152 models}} & \\
+    \hline
+   \textbf{Models selected for validation} & \\
+    \hline
+          \textit{Number of models after equilibration} & 6400000\\
+                \textit{Number of models that satisfy the input information} & 7089\\
+                \textit{Number of structures in samples A/B} & 2378/4711\\
+                \textit{p-value of non-parametric Kolmogorov-Smirnov two-sample test} & 0.539 (threshold p-value $>$ 0.05)\\
+                \textit{Kolmogorov-Smirnov two-sample test statistic, D} & 0.0\\
+           \hline
+    
+    \textbf{Thoroughness of the structural sampling} & \\
+    \hline
+          \textit{Sampling precision} & 14.08 \AA \\
+                \textit{Homogeneity of proportions $\chi^2$ test (p-value)/Cramer’s V value} & 1.000/0.000 (thresholds: p-value$>$0.05 OR Cramer's V$<$0.1)\\
+                \textit{Number of clusters} & 1\\
+                \textit{Cluster populations} & cluster 1 : 100.0 $\%$\\
+                \textit{Cluster precisions} & cluster 1 : 9.52 \AA\\
+                \textit{Average cross-correlation between localization probability densities of samples A and B} & cluster 1: 0.78\\
+           \hline
+  
+  \textbf{Validation by information used for modeling} & \\
+  \hline
+          \textit{Percent of sequence connectivity restraints satisfied per structure} & 99 \%\\
+                \textit{Percent cross-link restraints satisfied by ensemble} & 99 \%\\
+                \textit{Percent of excluded volume restraints satisfied per structure} & 99 \%\\
+          &  \\
+  
+   &  \\
+  \normalsize{\textbf{5) Software and data availability}} & \\
+    \hline
+   \textbf{Software} & \\
+   \hline
+             \textit{Modeling programs} & IMP PMI module, version develop-1350fc67f7\\
+             & Integrative Modeling Platform (IMP), version develop-1350fc67f7 \\
+                  \textit{Modeling scripts} & https://github.com/integrativemodeling/NPC\_TMD\\
+                  \textit{Structure prediction} & AlphaFold2\\
+                  \textit{Visualization and plotting} & UCSF Chimera\\
+          \hline
+
+  \textbf{Data} & \\
+    \hline
+            \textit{PDB-dev accesion code} & TBD\\
+          \hline
+  
+\end{longtable}
+\end{landscape}
+
+
+\end{document}
