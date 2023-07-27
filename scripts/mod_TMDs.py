@@ -52,7 +52,7 @@ n_densities = 10
 colors = ['gray','red' ]
 
 for k, (prot, doms) in enumerate(domains.items()):
-    seqs = IMP.pmi.topology.Sequences(top_dir+f'data/{prot}.fasta')
+    seqs = IMP.pmi.topology.Sequences(os.path.join(top_dir,f'data/{prot}.fasta'))
     mol = st.create_molecule(prot,sequence=seqs[prot],chain_id='A')
     pdb_file = os.path.join(top_dir,pdb[prot])
     struct = []
@@ -165,7 +165,7 @@ msl_weight  = 1.0
 ############################################
 # Membrane binding
 ############################################
-'''
+
 transmembrane_sel = [(106,133,'Pom152',0),
                      (144,167,'Pom152',0),
                      (176,194,'Pom152',0),
@@ -227,7 +227,7 @@ for sel in poreside_sel:
     msl_1.add_to_model()
     output_objects.append(msl_1)
     print('Membrane binding restraint ready', msl_1.get_output())
-'''
+    
 ############################################
 # EM
 ############################################     
@@ -235,18 +235,15 @@ for sel in poreside_sel:
 densities = IMP.atom.Selection(hier,
                                representation_type=IMP.atom.DENSITIES).get_selected_particles()
     
-IMP.isd.gmm_tools.write_gmm_to_map(densities, "test.mrc", voxel_size=3.0, fast=True)
-
-print('densities', densities, len(densities))
+print('Number of densities', len(densities))
 gem = IMP.bayesianem.restraint.GaussianEMRestraintWrapper(densities,
-                                                          top_dir+'data/em_data/run27h-c2-50-300bf_locres_filt-mask2-2-norm-100-zone16-TMDs-dust_dsfact1_ng60_oriented.txt',
+                                                          os.path.join(top_dir,'data/em_data/run27h-c2-50-300bf_locres_filt-mask2-2-norm-100-zone16-TMDs-dust_dsfact1_ng60_oriented.txt'),
                                                           scale_target_to_mass=True)
 gem.set_label("EM_membrane")
-#gem.add_target_density_to_hierarchy(st)
 gem.add_to_model()
 gem.set_weight(20.0)
 output_objects.append(gem)
-#gem.center_model_on_target_density(st)
+
 
 t0 = gem.evaluate()
 
@@ -299,7 +296,7 @@ if include_XLs:
     
     # XLs RESTRAINT
     cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
-    cldb.create_set_from_file(top_dir+"data/XLs_all_2020.csv")
+    cldb.create_set_from_file(os.path.join(top_dir,"data/XLs_all_2020.csv"))
 
     xl1 = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(root_hier=hier,
                                                                                 database=cldb,
@@ -322,7 +319,6 @@ IMP.pmi.tools.shuffle_configuration(sel,
                                     avoidcollision_rb=False)
 
 mdl.update()
-IMP.isd.gmm_tools.write_gmm_to_map(densities, "test_shuffle.mrc", voxel_size=3.0, fast=True)
 
 ############################
 # Sampling
@@ -417,32 +413,31 @@ if '--mmcif' in sys.argv:
     model = po.add_model(e.model_group)
 
     # Add ensemble members
-    models = []
-    rmf_ensemble = '../results/cluster0_random_sel.rmf3'
-    rh = RMF.open_rmf_file_read_only(rmf_ensemble)
-    temp_hier = IMP.rmf.create_hierarchies(rh, mdl)[0]
-    for frame_number in range(rh.get_number_of_frames()):        
-        IMP.rmf.load_frame(rh, RMF.FrameID(0))
-        models.append(temp_hier)
-        #model = po.add_model(e.model_group)
+    #models = []
+    #rmf_ensemble = '../results/cluster0_random_sel.rmf3'
+    #rh = RMF.open_rmf_file_read_only(rmf_ensemble)
+    #temp_hier = IMP.rmf.create_hierarchies(rh, mdl)[0]
+    #for frame_number in range(rh.get_number_of_frames()):        
+    #    IMP.rmf.load_frame(rh, RMF.FrameID(0))
+    #    models.append(temp_hier)
+    #    #model = po.add_model(e.model_group)
 
-    model_group = ihm.model.ModelGroup(models, name="Cluster 1")
-    state = ihm.model.State([model_group])
-    s.state_groups.append(ihm.model.StateGroup([state]))
+    #model_group = ihm.model.ModelGroup(models, name="Cluster 1")
+    #state = ihm.model.State([model_group])
+    #s.state_groups.append(ihm.model.StateGroup([state]))
     
-    del rh
+    #del rh
     
     # Add localization densities
     # Look up the ihm.AsymUnit corresponding to a PMI component name
     for asym in po.asym_units:
-        for s in np.arange(0,6,1):
-            name = asym.split('.')[0]
-            fname = f'../results/clustering/cluster.0/LPD_{name}_0.mrc'
-            print('fname', fname)
-            loc = ihm.location.OutputFileLocation(fname)
-            den = ihm.model.LocalizationDensity(file=loc, asym_unit=po.asym_units[asym])
-            # Add to ensemble
-            e.densities.append(den)
+        name = asym.split('.')[0]
+        fname = f'../results/clustering/cluster.0/LPD_{name}_0.mrc'
+        print('fname', fname)
+        loc = ihm.location.OutputFileLocation(fname)
+        den = ihm.model.LocalizationDensity(file=loc, asym_unit=po.asym_units[asym])
+        # Add to ensemble
+        e.densities.append(den)
     
     # Add uniprot of proteins
 
@@ -464,11 +459,12 @@ if '--mmcif' in sys.argv:
         po.asym_units[prot].entity.references.append(ref)
 
     # Point to the raw mass spec data and peaklists used to derive the crosslinks.
-    #l = ihm.location.PRIDELocation('PXD019338',
-    #                               details='All raw mass spectrometry files and '
-    #                               'peaklists used in the study')
+    l = ihm.location.Repository(url='https://zenodo.org/record/5721514',
+                                doi='10.5281/zenodo.5721514',
+                                details='All raw mass spectrometry files and peaklists used in the study')
     #xl1.dataset.add_primary(ihm.dataset.MassSpecDataset(location=l))
-        
+
+    # Point to the EM density map
     lem = ihm.location.EMDBLocation('EMD-41117',
                                  details='Pom34-152 membrane attachment site in the yeast NPC')
     gem.dataset.add_primary(ihm.dataset.EMDensityDataset(location=lem))
