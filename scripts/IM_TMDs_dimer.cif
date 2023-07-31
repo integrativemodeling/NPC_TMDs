@@ -5325,7 +5325,7 @@ _ihm_external_files.file_path
 _ihm_external_files.content_type
 _ihm_external_files.file_size_bytes
 _ihm_external_files.details
-1 1 mod_TMDs.py 'Modeling workflow or script' 19397
+1 1 mod_TMDs.py 'Modeling workflow or script' 19418
 'The main integrative modeling script'
 2 1 ../data/AF-P39685-F1-model_v4.pdb 'Input data or restraints' 879255
 'Starting model structure'

@@ -63,57 +63,6 @@ for k, (prot, doms) in enumerate(domains.items()):
     mol.add_representation(mol[0:250]-struct,resolutions=[2], color = colors[k])
     mols.append(mol)
         
-
-'''
-# Read sequences and create Molecules
-seqs = IMP.pmi.topology.Sequences(top_dir+'data/Pom152.fasta')
-mol = st.create_molecule("Pom152",sequence=seqs["Pom152"],chain_id='A')
-
-
-pdb_file = os.path.join(top_dir,'data/AF-Pom152-Pom34_sel.pdb')
-chain_id = 'B'
-n_densities = 10
-
-a1 = mol.add_structure(pdb_file,
-                       chain_id=chain_id,
-                       res_range = (105,195))
-
-# Add structured part representation and then build
-mol.add_representation(a1,
-                       density_residues_per_component=n_densities,
-                       density_voxel_size=3.0,
-                       resolutions=[1],
-                       density_prefix = os.path.join('data/em_data',f'Pom152'))
-
-mol.add_representation(mol[0:104],resolutions=[5],color='gray')
-mol.add_representation(mol[195:210],resolutions=[5],color='gray')
-
-mols.append(mol)
-##############
-# Pom34
-##############
-seqs = IMP.pmi.topology.Sequences(top_dir+'data/Pom34.fasta')
-mol = st.create_molecule("Pom34",sequence=seqs["Pom34"],chain_id='C')
-
-pdb_file = os.path.join(top_dir,'data/AF-Pom152-Pom34_sel.pdb')
-a1 = mol.add_structure(pdb_file,
-                       chain_id='C',
-                       res_range = (57,150))
-
-# Add structured part representation and then build
-mol.add_representation(a1,
-                       density_residues_per_component=10,
-                       density_voxel_size=3.0,
-                       resolutions=[1],
-                       density_prefix = os.path.join('data/em_data',f'Pom34'),
-                       color='red')
-
-
-mol.add_representation(mol[:]-a1,resolutions=[5],
-                       color='red')
-mols.append(mol)
-'''
-
 # Clone
 clones = []
 chains='DE'
@@ -132,14 +81,9 @@ out.init_rmf("sym_ini.rmf3", [hier])
 out.write_rmf("sym_ini.rmf3")
 out.close_rmf("sym_ini.rmf3")
 ############################################
-# DOF
+# DOFs
 ############################################             
-
-
-
 dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-#rb_movers0,rb0 = dof.create_rigid_body(mols[0:2])
-#rb_movers1,rb1 = dof.create_rigid_body(mols[2:4])
 
 for i, mol in enumerate(mols):
     dof.create_flexible_beads(mol.get_non_atomic_residues())

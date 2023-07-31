@@ -170,7 +170,7 @@ transmembrane_sel = [(106,133,'Pom152',0),
                      (144,167,'Pom152',0),
                      (176,194,'Pom152',0),
                      (57,87,'Pom34',0),
-                     (119,150,'Pom34',0)]
+                     (122,150,'Pom34',0)]
 
 for sel in transmembrane_sel:
     msl = IMP.pmi.restraints.npc.MembraneSurfaceLocationRestraint(hier=hier,
@@ -425,7 +425,7 @@ if '--mmcif' in sys.argv:
     models = []
     rmf_ensemble = '../results/cluster0_random_sel.rmf3'
     rh = RMF.open_rmf_file_read_only(rmf_ensemble)
-    IMP.rmf.load_frame(rh, RMF.FrameID(0))
+    IMP.rmf.link_hierarchies(rh, [hier])
     for frame_number in range(rh.get_number_of_frames()):        
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
         mdl.update()
