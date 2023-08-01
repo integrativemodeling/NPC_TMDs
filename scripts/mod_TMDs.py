@@ -29,6 +29,7 @@ import time
 import numpy as np
 import os
 import sys
+import ihm.cross_linkers
 
 from npc import *
 
@@ -191,7 +192,7 @@ perinuclear_sel = [(134,143,'Pom152',0),
                    (88,89,'Pom34',0),
                    (111,118,'Pom34',0)]
                       
-    
+'''    
 for sel in perinuclear_sel:
     print('Applying membrane localization restraint:', sel)
     msl_1 = PerinuclearVolumeLocationRestraint(hier,
@@ -227,7 +228,7 @@ for sel in poreside_sel:
     msl_1.add_to_model()
     output_objects.append(msl_1)
     print('Membrane binding restraint ready', msl_1.get_output())
-    
+'''    
 ############################################
 # EM
 ############################################     
@@ -302,7 +303,8 @@ if include_XLs:
                                                                                 database=cldb,
                                                                                 resolution=1,
                                                                                 length=21.0,
-                                                                                slope=0.01)
+                                                                                slope=0.01,
+                                                                                linker=ihm.cross_linkers.dss)
     xl1.add_to_model()
     xl1.set_weight(w_xls)
     rmf_restraints.append(xl1)
