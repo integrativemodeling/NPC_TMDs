@@ -32,6 +32,9 @@ import sys
 import ihm.cross_linkers
 
 from npc import *
+sys.path.append('../utils/')
+import make_archive
+
 
 top_dir = '../'
 
@@ -379,16 +382,19 @@ if '--mmcif' in sys.argv:
     s = po.system
     print("restraint datasets:", [r.dataset for r in s.restraints])
     # Datasets for XL-MS restraint
+    l = ihm.location.Repository(url='https://zenodo.org/record/5721514',
+                                doi='10.5281/zenodo.5721514',
+                                details='All raw mass spectrometry files and peaklists used in the study')
     for r in s.restraints:
         print('----', r)
         if isinstance(r, ihm.restraint.CrossLinkRestraint):
             r.linker = ihm.cross_linkers.dsso
+            r.dataset.location.details = l
             print("XL-MS dataset at:", r.dataset.location.path)
             print("Details:", r.dataset.location.details)
-          
     # Correct number of output models to account for multiple runs
     protocol = s.orphan_protocols[-1]
-    protocol.steps[-1].num_models_end = 2500000
+    protocol.steps[-1].num_models_end = 6400000
 
     # Get last protocol in the file
     protocol = po.system.orphan_protocols[-1]
@@ -397,9 +403,9 @@ if '--mmcif' in sys.argv:
     analysis = ihm.analysis.Analysis()
     protocol.analyses.append(analysis)
     analysis.steps.append(ihm.analysis.ClusterStep(
-                            feature='RMSD', num_models_begin=200000,
-                            num_models_end=9999))
-    
+                            feature='RMSD',
+                           num_models_begin=6400000,
+                            num_models_end=7089))
 
     # Create an ensemble for the cluster
     #e = po._add_simple_ensemble(analysis.steps[-1],
@@ -412,6 +418,7 @@ if '--mmcif' in sys.argv:
     e = ihm.model.Ensemble(model_group=mg,
                        num_models=11,
                        post_process=analysis.steps[-1],
+                       precision=9.52,
                        name="Cluster 0")
     po.system.ensembles.append(e)
     
@@ -458,9 +465,7 @@ if '--mmcif' in sys.argv:
     
     # name : (uniprot id, mutations, [[db_begin, db_end, entity_begin, entity_end]]
     Uniprot={'Pom34.0': ('Q12445',[1,299,1,250]),
-             'Pom34.1': ('Q12445',[1,299, 1,250]),
-             'Pom152.0': ('P39685',[1,1337,1,250]),
-             'Pom152.1': ('P39685',[1,1337,1,250])}
+             'Pom152.0': ('P39685',[1,1337,1,250])}
     
     for prot, (entry, limits) in Uniprot.items():
         print(prot, entry, limits)
@@ -469,12 +474,6 @@ if '--mmcif' in sys.argv:
             db_begin=limits[0], db_end=limits[1], entity_begin=limits[2], entity_end=limits[3]))
             
         po.asym_units[prot].entity.references.append(ref)
-
-    # Point to the raw mass spec data and peaklists used to derive the crosslinks.
-    l = ihm.location.Repository(url='https://zenodo.org/record/5721514',
-                                doi='10.5281/zenodo.5721514',
-                                details='All raw mass spectrometry files and peaklists used in the study')
-    #xl1.dataset.add_primary(ihm.dataset.MassSpecDataset(location=l))
 
     # Point to the EM density map
     lem = ihm.location.EMDBLocation('EMD-41117',
@@ -487,37 +486,22 @@ if '--mmcif' in sys.argv:
     d = em.dataset
     print("GMM file at", d.location.path)
     print("is derived from EMDB entry", d.parents[0].location.access_code)
-    
+
     # Replace local links with DOIs
     repos = []
-    #for subdir, zipname in make_archive.ARCHIVES.items():
-    #    print('subdir', subdir)
-    #    repos.append(ihm.location.Repository(
-    #        doi="10.5281/zenodo.3836213", root="../%s" % subdir,
-    #        url="https://zenodo.org/record/3836213/files/%s.zip" % zipname,
-    #        top_directory=os.path.basename(subdir)))
-    
-    po.system.update_locations_in_repositories(repos)
+    for subdir, zipname in make_archive.ARCHIVES.items():
+        print('subdir', subdir)
+        repos.append(ihm.location.Repository(
+            doi="10.5281/zenodo.8226857", root="../%s" % subdir,
+            url="https://zenodo.org/record/8226857/files/%s.zip" % zipname,
+            top_directory=os.path.basename(subdir)))
 
+    po.system.update_locations_in_repositories(repos)
+    
+    po.finalize()
     with open('IM_TMDs_dimer.cif', 'w') as fh:
         ihm.dumper.write(fh, [po.system])
     
 
 
 exit()
-'''
-6961 1 1 2 B 26.976 -344.364 -19.344 3.504 . 11
-6962 1 3 4 B 29.895 -351.728 -23.670 3.504 . 11
-6963 1 5 6 B 38.383 -347.271 -19.642 3.504 . 11
-6964 1 7 8 B 38.111 -342.148 -12.714 3.504 . 11
-6965 1 9 10 B 36.837 -339.330 -3.411 3.504 . 11
-6966 1 11 12 B 30.154 -336.497 3.547 3.504 . 11
-
-
-6265 1 1 2 B 26.976 -344.364 -19.344 3.504 . 10
-6266 1 3 4 B 29.895 -351.728 -23.670 3.504 . 10
-6267 1 5 6 B 38.383 -347.271 -19.642 3.504 . 10
-6268 1 7 8 B 38.111 -342.148 -12.714 3.504 . 10
-6269 1 9 10 B 36.837 -339.330 -3.411 3.504 . 10
-6270 1 11 12 B 30.154 -336.497 3.547 3.504 . 10
-'''
