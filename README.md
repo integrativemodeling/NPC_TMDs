@@ -1,5 +1,4 @@
 # Integrative structure determination of the Pom34-152 transmembrane
-attachment site
 
 ## Summary
 

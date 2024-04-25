@@ -1,3 +1,10 @@
+#####################################
+# Refinement of Pom34-Pom152 TMDs
+# using two-fold symmetry
+#
+# Ignacia Echeverria - Sali Lab
+######################################
+
 import IMP
 import RMF
 import IMP.atom
@@ -22,8 +29,7 @@ import os
 
 from npc import *
 
-top_dir = '/Users/iecheverria/Dropbox/UCSF/yeast_npc/modeling/mod_franken/mod_pomring/'
-top_dir = '/wynton/home/sali/ignacia/NPC/modeling_2023/TMDs/'
+top_dir = './'
 
 # Create System and State
 mdl = IMP.Model()
@@ -129,14 +135,6 @@ for n, mol in enumerate(mols):
 ##########################
 # Membrane binding
 ##########################
-#tor_th      = 45.0
-#tor_th_ALPS = 12.0
-#tor_R       = 390.0 + 225.0
-#tor_r       = 150.0 - tor_th/2.0
-#tor_r_ALPS  = 150.0 - tor_th_ALPS/2.0
-#msl_sigma   = 1.0
-#msl_weight  = 10.0
-
 tor_th      = 45.0
 tor_th_ALPS = 12.0
 tor_R       = 390.0 + 180.0
@@ -224,11 +222,9 @@ gem = IMP.bayesianem.restraint.GaussianEMRestraintWrapper(densities,
                                                           top_dir+'data/em_data/run27h-c2-50-300bf_locres_filt-mask2-2-norm-100-zone16-TMDs-dust_dsfact1_ng60_oriented.txt',
                                                           scale_target_to_mass=True)
 gem.set_label("EM_membrane")
-#gem.add_target_density_to_hierarchy(st)
 gem.add_to_model()
 gem.set_weight(20.0)
 output_objects.append(gem)
-#gem.center_model_on_target_density(st)
 
 t0 = gem.evaluate()
 
@@ -278,8 +274,7 @@ if include_XLs:
     cldbkc.set_protein2_key("Protein2")
     cldbkc.set_residue1_key("Residue1")
     cldbkc.set_residue2_key("Residue2")
-    #cldbkc.set_unique_id_key("UniqueID")
-    #cldbkc.set_psi_key("Psi")
+    
 
     # XLs RESTRAINT
     cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
@@ -301,9 +296,6 @@ if include_XLs:
 
 sel = IMP.atom.Selection(hier).get_selected_particles()
 
-#IMP.pmi.tools.shuffle_configuration(sel,
-#                                    bounding_box=((-150, -540, -20), (150, -440, 20)),
-#                                    avoidcollision_rb=False)
 
 mdl.update()
 IMP.isd.gmm_tools.write_gmm_to_map(densities, "test_shuffle.mrc", voxel_size=3.0, fast=True)
@@ -313,8 +305,7 @@ IMP.isd.gmm_tools.write_gmm_to_map(densities, "test_shuffle.mrc", voxel_size=3.0
 ############################
 
 mc1 = IMP.pmi.macros.ReplicaExchange(mdl,
-                                      root_hier=hier,                       
-                                      #crosslink_restraints=rmf_restraints,       
+                                      root_hier=hier,                           
                                       monte_carlo_sample_objects=dof.get_movers(),  
                                       global_output_directory="output/",
                                       output_objects=output_objects,

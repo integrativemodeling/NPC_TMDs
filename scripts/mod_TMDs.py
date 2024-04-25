@@ -192,7 +192,7 @@ perinuclear_sel = [(134,143,'Pom152',0),
                    (88,89,'Pom34',0),
                    (111,118,'Pom34',0)]
                       
-'''    
+    
 for sel in perinuclear_sel:
     print('Applying membrane localization restraint:', sel)
     msl_1 = PerinuclearVolumeLocationRestraint(hier,
@@ -228,7 +228,7 @@ for sel in poreside_sel:
     msl_1.add_to_model()
     output_objects.append(msl_1)
     print('Membrane binding restraint ready', msl_1.get_output())
-'''    
+  
 ############################################
 # EM
 ############################################     
@@ -471,11 +471,10 @@ if '--mmcif' in sys.argv:
         po.asym_units[prot].entity.references.append(ref)
 
     # Point to the raw mass spec data and peaklists used to derive the crosslinks.
-    l = ihm.location.Repository(url='https://zenodo.org/record/5721514',
-                                doi='10.5281/zenodo.5721514',
+    l = ihm.location.Repository(url='https://zenodo.org/record/8226857',
+                                doi='10.5281/zenodo.8226857',
                                 details='All raw mass spectrometry files and peaklists used in the study')
-    #xl1.dataset.add_primary(ihm.dataset.MassSpecDataset(location=l))
-
+    
     # Point to the EM density map
     lem = ihm.location.EMDBLocation('EMD-41117',
                                  details='Pom34-152 membrane attachment site in the yeast NPC')
@@ -493,8 +492,8 @@ if '--mmcif' in sys.argv:
     #for subdir, zipname in make_archive.ARCHIVES.items():
     #    print('subdir', subdir)
     #    repos.append(ihm.location.Repository(
-    #        doi="10.5281/zenodo.3836213", root="../%s" % subdir,
-    #        url="https://zenodo.org/record/3836213/files/%s.zip" % zipname,
+    #        doi="10.5281/zenodo.8226857", root="../%s" % subdir,
+    #        url="https://zenodo.org/record/8226857/files/%s.zip" % zipname,
     #        top_directory=os.path.basename(subdir)))
     
     po.system.update_locations_in_repositories(repos)
@@ -505,19 +504,3 @@ if '--mmcif' in sys.argv:
 
 
 exit()
-'''
-6961 1 1 2 B 26.976 -344.364 -19.344 3.504 . 11
-6962 1 3 4 B 29.895 -351.728 -23.670 3.504 . 11
-6963 1 5 6 B 38.383 -347.271 -19.642 3.504 . 11
-6964 1 7 8 B 38.111 -342.148 -12.714 3.504 . 11
-6965 1 9 10 B 36.837 -339.330 -3.411 3.504 . 11
-6966 1 11 12 B 30.154 -336.497 3.547 3.504 . 11
-
-
-6265 1 1 2 B 26.976 -344.364 -19.344 3.504 . 10
-6266 1 3 4 B 29.895 -351.728 -23.670 3.504 . 10
-6267 1 5 6 B 38.383 -347.271 -19.642 3.504 . 10
-6268 1 7 8 B 38.111 -342.148 -12.714 3.504 . 10
-6269 1 9 10 B 36.837 -339.330 -3.411 3.504 . 10
-6270 1 11 12 B 30.154 -336.497 3.547 3.504 . 10
-'''
